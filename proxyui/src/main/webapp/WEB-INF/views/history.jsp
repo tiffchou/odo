@@ -65,11 +65,14 @@
                 </li>
             </ul>
 
+            <div class="form-group navbar-form navbar-left">
+                <button class="btn btn-danger" onclick='clearHistory()'>Clear History</button>
+            </div>
+
             <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Options <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#" onclick='clearHistory()'>Clear History</a></li>
                         <li ><a href="#" onclick='navigateScripts()'>Edit Scripts</a></li>
                         <li ><a href="#" onclick='openGridOptions()'>Grid Options</a></li>
                     </ul>
