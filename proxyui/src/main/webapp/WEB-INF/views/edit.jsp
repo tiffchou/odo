@@ -651,6 +651,9 @@
                     topinfo:"Fields marked with a (*) are required.",
                     width: 400,
                     beforeShowForm: function(formid) {
+                        $("#statusNotificationDiv").fadeOut();
+                        $("#serverNotificationDiv").fadeOut();
+
                         /* CREATE PLACEHOLDERS FOR ADD FORM. */
                         /* INITIALLY, GRAY */
                         $("#srcUrl").val(getExampleText("src"));
@@ -674,7 +677,12 @@
                     afterSubmit: function () {
                         reloadGrid("#serverlist");
                         return [true];
-                    }
+                    },
+                    afterComplete: function(data) {
+                        reloadGrid("#serverlist");
+                        $("#serverNotificationText").html("API server added. Don't forget to add a path below!");
+                        $("#serverNotificationDiv").fadeIn();
+                    },
                 },
                 {
                     mtype: 'DELETE',
@@ -891,6 +899,7 @@
                         },
                         beforeShowForm: function(data) {
                             $("#statusNotificationDiv").fadeOut();
+                            $("#serverNotificationDiv").fadeOut();
 
                             /* CREATE PLACEHOLDERS FOR ADD FORM. */
                             /* INITIALLY, GRAY */
@@ -1827,6 +1836,10 @@
             function dismissReorderNotificationDiv() {
                 $("#reorderNotificationDiv").fadeOut();
             }
+
+            function dismissServerNotificationDiv() {
+                $("#serverNotificationDiv").fadeOut();
+            }
         </script>
 
     </head>
@@ -1891,6 +1904,13 @@
                 <div>
                     <table id="serverlist"></table>
                     <div id="servernavGrid"></div>
+                </div>
+                <!-- div for top bar notice - server -->
+                <div class="ui-widget" id="serverNotificationDiv" style="display: none;" onClick="dismissServerNotificationDiv()">
+                    <div class="ui-state-highlight ui-corner-all" style="margin-top: 10px;  margin-bottom: 10px; padding: 0 .7em;">
+                        <p style="margin-top: 10px; margin-bottom:10px;"><span class="ui-icon ui-icon-info" style="float: left; margin-right: .3em;"></span>
+                            <span id="serverNotificationText"/></p>
+                    </div>
                 </div>
                 <div>
                     <table id="packages">
