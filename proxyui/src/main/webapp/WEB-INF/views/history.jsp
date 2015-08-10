@@ -5,11 +5,6 @@
 <head>
     <title>History: ${profile_name}</title>
     <%@ include file="/resources/js/webjars.include" %>
-    <style type="text/css">
-        ul, li {
-            list-style-type: none;
-        }
-    </style>
     <script src="<c:url value="/resources/js/diff_match_patch_uncompressed.js" />"></script>
     <link rel="stylesheet" type="text/css" media="screen"
              href="<c:url value="/resources/css/odo.css"/>" />
@@ -22,10 +17,18 @@
     </script>
 
      <style type="text/css">
-    
-    .has-switch {height: 30px}
 
-    .altRowClass { background: #EEEEEE; }
+         ul, li {
+             list-style-type: none;
+         }
+
+        .has-switch {
+            height: 30px
+        }
+
+        .altRowClass {
+            background: #EEEEEE;
+        }
 
      </style>
 </head>

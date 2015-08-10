@@ -40,6 +40,8 @@
             #details {
                 position: sticky;
                 top: 10px;
+                width: 50vw;
+                max-width: 50vw; /* ALLOWS FOR SCROLLING TO THE END OF THE DIV IF LARGER THAN WINDOW */
             }
 
             #container, #tabs {
@@ -55,11 +57,6 @@
             {
                 min-width: 400px;
                 margin-right: 20px;
-            }
-
-            #editDiv {
-                width: 45vw;
-                max-width: 45vw; /* ALLOWS FOR SCROLLING TO THE END OF THE DIV IF LARGER THAN WINDOW */
             }
 
             #serverEdit {
