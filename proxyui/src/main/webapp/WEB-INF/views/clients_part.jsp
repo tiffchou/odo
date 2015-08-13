@@ -72,7 +72,17 @@ function manageClientPopup() {
 
 function changeClientSubmit(id) {
     // this is here in case the user didn't submit their changes as when they clicked "Select"
-    $("#clientlist").jqGrid("saveRow", id);
+    var saveParameters = {
+        "successfunc" : null,
+        "url" : '<c:url value="/api/profile/${profile_id}/clients/"/>' + $("#clientlist").jqGrid("getCell", id, "uuid"),
+        "extraparam" : {},
+        "aftersavefunc" : null,
+        "errorfunc": null,
+        "afterrestorefunc" : null,
+        "restoreAfterError" : true,
+        "mtype" : "POST"
+    }
+    $("#clientlist").jqGrid("saveRow", id, saveParameters);
 
     $.removeCookie("UUID", { expires: 10000, path: '/testproxy/' });
     var value = $("#clientlist").jqGrid('getCell', id, "friendlyName");
@@ -80,11 +90,11 @@ function changeClientSubmit(id) {
         value = $("#clientlist").jqGrid('getCell', id, 'uuid');
     }
     var url = '<c:url value="/edit/${profile_id}"/>?clientUUID=' + value;
-    //window.location.href = url;
+    window.location.href = url;
 }
 
 $(document).ready(function () {
-    var lastSelected = "-1";
+    var lastSelected = -2;
     var clientList = jQuery("#clientlist");
     clientList
     .jqGrid({
@@ -95,7 +105,6 @@ $(document).ready(function () {
         pgtext : null,
         multiselect:true,
         multiboxonly:true,
-        cellEdit : true,
         datatype : "json",
         colNames : [ 'ID', 'UUID',
             'Friendly Name', 'Active', 'Last Accessed', 'Change Current' ],
@@ -142,21 +151,42 @@ $(document).ready(function () {
             root : 'clients',
             repeatitems : false
         },
-        afterEditCell : function(rowid, cellname, value, iRow, iCol) {
-            var uuid = clientList.getCell(rowid, 'uuid');
-            if (cellname == "friendlyName") {
-                clientList.setGridParam({
-                    cellurl : '<c:url value="/api/profile/${profile_id}/clients/"/>' + uuid
-                });
-            }
-        },
         onCellSelect: function(id, iCol, cellcontent, e) {
             if( id != lastSelected ) {
-                $("#clientlist").jqGrid("saveRow", lastSelected);
-                lastSelected = id;
-                $("#clientlist").jqGrid("editRow", id, true);
-            }
+                if( lastSelected != -2 ) {
+                    // check if active
+                    var active = $("#enabled_"+lastSelected).val() === 1;
+                    var saveParameters = {
+                        "successfunc" : null,
+                        "url" : '<c:url value="/api/profile/${profile_id}/clients/"/>' + $("#clientlist").jqGrid("getCell", lastSelected, "uuid"),
+                        "extraparam" : {
+                            "active": active
+                        },
+                        "aftersavefunc" : null,
+                        "errorfunc": null,
+                        "afterrestorefunc" : null,
+                        "restoreAfterError" : true,
+                        "mtype" : "POST"
+                    };
+                    $("#clientlist").jqGrid("saveRow", lastSelected, saveParameters);
+                }
 
+                lastSelected = id;
+
+                var editParameters = {
+                    "oneditfunc" : null,
+                    "successfunc" : null,
+                    "url" : '<c:url value="/api/profile/${profile_id}/clients/"/>' + $("#clientlist").jqGrid("getCell", id, "uuid"),
+                    "extraparam" : {},
+                    "aftersavefunc" : null,
+                    "errorfunc": null,
+                    "afterrestorefunc" : null,
+                    "restoreAfterError" : true,
+                    "mtype" : "POST"
+                };
+                console.log("save param: "+editParameters.url);
+                $("#clientlist").jqGrid("editRow", id, true, editParameters);
+            }
         },
         afterSaveCell: function() {
             clientList.trigger("reloadGrid");
