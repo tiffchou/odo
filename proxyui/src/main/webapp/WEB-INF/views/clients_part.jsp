@@ -60,7 +60,6 @@ function manageClientPopup() {
         width:'auto',
         height:'auto',
         close: function() {
-            $("#friendlyNameSubmitError").html("");
             $("#switchClientName").val("");
         },
         buttons: {
@@ -72,23 +71,20 @@ function manageClientPopup() {
 }
 
 function changeClientSubmit(id) {
-    // check to see if row is being edited
-    var editing = $("#clientlist #" + id + " td").hasClass("edit-cell");
+    // this is here in case the user didn't submit their changes as when they clicked "Select"
+    $("#clientlist").jqGrid("saveRow", id);
 
-    if( editing ) {
-        $("#friendlyNameSubmitError").html("Please finish editing the friendly name (submit the name with Enter key) before choosing this client.");
-    } else {
-        $.removeCookie("UUID", { expires: 10000, path: '/testproxy/' });
-        var value = $("#clientlist").jqGrid('getCell', id, "friendlyName");
-        if( value === "" ) {
-            value = $("#clientlist").jqGrid('getCell', id, 'uuid');
-        }
-        var url = '<c:url value="/edit/${profile_id}"/>?clientUUID=' + value;
-        window.location.href = url;
+    $.removeCookie("UUID", { expires: 10000, path: '/testproxy/' });
+    var value = $("#clientlist").jqGrid('getCell', id, "friendlyName");
+    if( value === "" ) {
+        value = $("#clientlist").jqGrid('getCell', id, 'uuid');
     }
+    var url = '<c:url value="/edit/${profile_id}"/>?clientUUID=' + value;
+    //window.location.href = url;
 }
 
 $(document).ready(function () {
+    var lastSelected = "-1";
     var clientList = jQuery("#clientlist");
     clientList
     .jqGrid({
@@ -147,16 +143,22 @@ $(document).ready(function () {
             repeatitems : false
         },
         afterEditCell : function(rowid, cellname, value, iRow, iCol) {
-            $("#friendlyNameSubmitError").html("");
             var uuid = clientList.getCell(rowid, 'uuid');
-            console.log(rowid);
             if (cellname == "friendlyName") {
                 clientList.setGridParam({
                     cellurl : '<c:url value="/api/profile/${profile_id}/clients/"/>' + uuid
                 });
             }
         },
-        afterSaveCell : function() {
+        onCellSelect: function(id, iCol, cellcontent, e) {
+            if( id != lastSelected ) {
+                $("#clientlist").jqGrid("saveRow", lastSelected);
+                lastSelected = id;
+                $("#clientlist").jqGrid("editRow", id, true);
+            }
+
+        },
+        afterSaveCell: function() {
             clientList.trigger("reloadGrid");
         },
         gridComplete: function() {
@@ -238,5 +240,4 @@ $(document).ready(function () {
         <table id="clientlist" style="width:100%"></table><br>
         <div id="clientnavGrid"></div>
     </div>
-    <div id="friendlyNameSubmitError" style="color: red"></div>
 </div>
