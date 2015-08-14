@@ -79,7 +79,7 @@ function changeClientSubmit(id) {
             });
 
     // check if active -- pretty sure this doesn't work properly
-    var active = $("#enabled_"+lastSelected).val() === 1;
+    var active = $("#enabled_"+id).val() === 1;
     console.log("active: "+active);
 
     // this is here in case the user didn't submit their changes as when they clicked "Select"
