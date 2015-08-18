@@ -117,9 +117,8 @@ function editClientRow(id) {
 }
 
 function changeClientSubmit(id) {
-
     // check if active -- pretty sure this doesn't work properly
-    var active = $("#enabled_"+id).val() === 1;
+    var active = $("#" + id + "_isActive").is(":checked");
     console.log("active: "+active);
 
     saveClientRow(id, active);
@@ -197,7 +196,7 @@ $(document).ready(function () {
                 // and if there exists a last selected row
                 if( lastSelected != -2 ) {
                     // check if active  -- pretty sure this doesn't work properly
-                    var active = $("#enabled_"+lastSelected).val() === 1;
+                    var active = $("#" + id + "_isActive").is(":checked");
                     console.log("active: "+active);
 
                     saveClientRow(lastSelected, active);
